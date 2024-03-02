@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Ambulance Route Optimization System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            color: #333;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://www.fleetrobo.com/blog/wp-content/uploads/2020/05/save-maximum-lives-with-intelligent-ambulance-fleet-management-system.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden; /* To hide the overflow from the marquee */
+        }
+
+        .running-text {
+            margin-top: 10px;
+            font-size: 20px;
+            color: #ed0f0f;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: runningMessage 15s linear infinite;
+        }
+
+        .ambulance {
+            width: 100px;
+            margin-top: 10px;
+            animation: runningAmbulance 5s linear infinite; /* Adjust speed here */
+        }
+
+        @keyframes runningMessage {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+
+        @keyframes runningAmbulance {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+
+        .container {
+            max-width: 400px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Transparent white background */
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px); /* Blur effect for transparency */
+            visibility: hidden; /* Initially hide the container */
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333; /* Text color for better contrast */
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px;
+            background-color: #FF0000; /* Red color for the notification */
+            color: #fff;
+            border-radius: 10px;
+            display: none;
+            animation: glow 1.5s infinite alternate, blink 1s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000;
+            }
+            50% {
+                box-shadow: 0 0 20px #FF0000, 0 0 30px #FF0000;
+            }
+        }
+
+        @keyframes blink {
+            0%, 49%, 100% {
+                opacity: 1;
+            }
+            50%, 99% {
+                opacity: 0;
+            }
+        }
+
+        /* Additional styles for the thank you message */
+        #thankYouMessage {
+            display: none;
+            font-size: 24px;
+            font-weight: bold; /* Make the thank you message bold */
+            color: #eacb07;
+            margin-top: 20px;
+        }
+
+        /* Additional styles for blinking */
+        .blinking {
+            animation: blink 0.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Running ambulance image at the top -->
+    <img src="image.png" alt="Ambulance" class="ambulance">
+
+    <!-- Running text at the top -->
+    <div class="running-text">
+        Smart Ambulance Route Optimization System - Emergency Number: 123-456-7890 - Ambulance ID: AMB123 
+    </div>
+
+    <!-- Container for ambulance details -->
+    <div class="container" id="container">
+        <h1>Smart Ambulance Route Optimization System</h1>
+        <p id="alertMessage"></p>
+        <p id="distance"></p>
+    </div>
+
+    <!-- Notification div -->
+    <div class="notification" id="notification">Ambulance approaching! Clear the route!</div>
+
+    <!-- Thank you message -->
+    <div id="thankYouMessage">
+        Thank you for your cooperation! You might have saved a life.
+    </div>
+
+    <script>
+        let distance = 2000; // Initial distance in meters
+        let totalTime = 0; // Total time elapsed in seconds
+        let previousDistance = distance; // Variable to store previous distance
+        const maxTime = 60 * 15; // Maximum time period in seconds (15 minutes)
+
+        // Function to simulate updating data
+        function updateData() {
+            const decreaseRate = 100; // Decrease rate in meters every 5 seconds
+            const simulatedData = {
+                alertMessages: [
+                    "Ambulance approaching. Clear the route!",
+                    "Emergency vehicle on the way. Move aside!",
+                    "Clear the path! Ambulance needs to pass!"
+                ],
+            };
+
+            // Randomly select a message
+            const randomMessageIndex = Math.floor(Math.random() * simulatedData.alertMessages.length);
+            simulatedData.alertMessage = simulatedData.alertMessages[randomMessageIndex];
+
+            // Decrease the distance
+            distance -= decreaseRate;
+
+            // Ensure distance is not negative
+            distance = Math.max(0, distance);
+
+            return simulatedData;
+        }
+
+        // Function to play alert sound
+        function playAlertSound() {
+            var audio = new Audio('song.mp3'); 
+            audio.play();
+        }
+
+        // Update content and toggle visibility every 5 seconds
+        function updateAndToggleVisibility() {
+            // Get updated data
+            const simulatedData = updateData();
+
+            // Check if distance has changed
+            if (distance !== previousDistance) {
+                // Add blinking class to the container
+                const container = document.getElementById('container');
+                container.classList.add('blinking');
+                // Remove the blinking class after 0.5 seconds
+                setTimeout(() => {
+                    container.classList.remove('blinking');
+                }, 500);
+            }
+
+            // Update remaining distance and messages
+            document.getElementById('alertMessage').innerText = simulatedData.alertMessage;
+            document.getElementById('distance').innerText = `Remaining distance: ${distance} meters`;
+
+            // Toggle visibility of the container
+            const container = document.getElementById('container');
+            container.style.visibility = container.style.visibility === 'hidden' ? 'visible' : 'hidden';
+
+            // If distance becomes zero, display thank you message
+            if (distance === 0) {
+                document.getElementById('thankYouMessage').style.display = 'block';
+            }
+
+            // Increment total time elapsed
+            totalTime += 5;
+
+            // Display thank you message after the maximum time
+            if (totalTime >= maxTime) {
+                document.getElementById('thankYouMessage').style.display = 'block';
+            }
+
+            // Play alert sound and display initial notification immediately
+            playAlertSound();
+            document.getElementById('notification').style.display = 'block';
+
+            // Update previous distance
+            previousDistance = distance;
+        }
+
+        // Initial display after 0 milliseconds
+        setTimeout(() => {
+            updateAndToggleVisibility();
+            // Continue updating and toggling visibility every 5 seconds
+            const intervalId = setInterval(() => {
+                updateAndToggleVisibility();
+                // Stop the interval after the maximum time
+                if (totalTime >= maxTime) {
+                    clearInterval(intervalId);
+                }
+            }, 5000);
+        }, 0);
+    </script>
+</body>
+</html>

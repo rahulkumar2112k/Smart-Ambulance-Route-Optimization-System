@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Ambulance Route Optimization System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://www.fleetrobo.com/blog/wp-content/uploads/2020/05/save-maximum-lives-with-intelligent-ambulance-fleet-management-system.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            background-color: rgba(181, 11, 11, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Smart Ambulance Route Optimization System</h1>
+
+        <label for="source">Source:</label>
+        <input type="text" id="source" placeholder="Enter source location">
+
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" placeholder="Enter destination location">
+
+        <button onclick="openGoogleMaps()">ok</button>
+    </div>
+
+    <script>
+        function openGoogleMaps() {
+            const source = document.getElementById('source').value;
+            const destination = document.getElementById('destination').value;
+
+            if (source === '' || destination === '') {
+                alert('Please enter both source and destination.');
+                return;
+            }
+
+            const googleMapsUrl = `https://www.google.com/maps?q=${destination}&daddr=${destination}&saddr=${source}`;
+
+            window.open(googleMapsUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
